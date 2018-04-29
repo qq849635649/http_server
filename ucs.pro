@@ -6,6 +6,7 @@ INCLUDEPATH += \
 SOURCES += \
     src/main.cpp \
     src/timegeneration.cpp \
+    src/slabs.cc \
     src/slabs.cc
 
 HEADERS += \
@@ -14,4 +15,6 @@ HEADERS += \
     src/singleton.h \
     src/sharedstack.h \
     src/sharedrwlock.h \
-    src/rwlock.h
+    src/slabs.h \
+    src/sharedstack.h \
+    src/sharedrwlock.h

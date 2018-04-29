@@ -1,6 +1,8 @@
-#include <stdexcept>
 #include "logger.h"
 #include "timegeneration.h"
+#include <stdexcept>
+
+using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// class Debugger

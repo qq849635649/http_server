@@ -14,6 +14,38 @@
 #define RWLOCK_SPIN 2048
 #define RWLOCK_WLOCK  ((atomic_uint_t)-1)
 
+template<typename T>
+class ReadLocker
+{
+public:
+    ReadLocker(T *lk):lk_(lk)
+    {
+        lk_->RLock();
+    }
+    ~ReadLocker()
+    {
+        lk_->UnLock();
+    }
+private:
+    T * lk_;
+};
+
+template<typename T>
+class WriteLocker
+{
+public:
+    WriteLocker(T *lk):lk_(lk)
+    {
+        lk_->WLock();
+    }
+    ~WriteLocker()
+    {
+        lk_->UnLock();
+    }
+private:
+    T * lk_;
+};
+
 class SharedRWLock
 {
 private:
