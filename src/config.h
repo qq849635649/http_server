@@ -33,6 +33,7 @@ public:
     void loadConfFile(const char *file);
 
 private:
+    // 加载IP信息
     int getSockAddr(config_t* setting, const char *conf, struct sockaddr_in *addr);
 };
 

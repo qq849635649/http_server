@@ -11,6 +11,7 @@ MConfig::MConfig()
 {
 }
 
+// 加载配置文件
 void MConfig::loadConfFile(const char *file)
 {
     config_t setting = {};
@@ -44,6 +45,7 @@ void MConfig::loadConfFile(const char *file)
     config_destroy(&setting);
 }
 
+// 加载IP信息
 int MConfig::getSockAddr(config_t *setting, const char *conf, struct sockaddr_in *addr)
 {
     const char* listen = NULL;
