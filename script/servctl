@@ -1,0 +1,62 @@
+#!/bin/bash
+#
+# chkconfig: - 85 15
+# description: SSP middle ware
+
+### BEGIN INIT INFO
+# Provides: mutiRTBdispatch
+# Required-Start: $network $local_fs
+# Should-Start:
+# Short-Description: SSP middle ware
+# Description: SSP MIDDLEWARE EDIT BY NEAL HOO
+### END INIT INFO
+
+# Source function library.
+. /etc/init.d/functions
+
+prog=/usr/sbin/sspServer
+mrdconf=/etc/sspServer/base.conf
+pidfile=/var/run/sspServer.pid
+
+start() {
+	[ -x $prog ] || exit 1
+	[ -f $mrdconf ] || exit 2
+
+	echo -n $"Start sspServer:"
+	$prog -d
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && success || failure
+	echo
+	return $RETVAL
+}
+
+stop()
+{
+	[ -f $pidfile ] || exit 1
+	echo -n "Stop sspServer:"
+	killproc -p $pidfile $prog
+	retval=$?
+	[ $retval -eq 0 ] && {
+		rm -f $pidfile
+		success
+	} || failure
+	echo
+	return $retval
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|restart}"
+	exit 2
+esac
