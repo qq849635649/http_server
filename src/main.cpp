@@ -1,6 +1,7 @@
 
 #include <getopt.h>
 #include "config.h"
+#include "mainloop.h"
 
 int main(int argc, char * argv[])
 {
@@ -9,21 +10,17 @@ int main(int argc, char * argv[])
     bool daemon = false;
     const char *configPath = "./etc/base.conf";
     const char *pidPath = "./proc/ucs.pid";
-    while(-1 != (ch = getopt(argc, argv,
-            "f:"    //手动指定配置文件的位置
-            "d"     //是否采取守护进程方式运行程序
-            "p:"	//进程文件
-            )))
+    while(-1 != (ch = getopt(argc, argv, "f:dp:")))
     {
         switch(ch)
         {
-        case 'f':
+        case 'f':   // 手动指定配置文件的位置
             configPath = optarg;
             break;
-        case 'd':
+        case 'd':   // 是否采取守护进程方式运行程序
             daemon = true;
             break;
-        case 'p':
+        case 'p':   // 指定进程文件
             pidPath = optarg;
             break;
         default:
@@ -35,6 +32,8 @@ int main(int argc, char * argv[])
 
     // 解析配置文件
     MConfig::I().loadConfFile(configPath);
+
+    // 初始化日志
 
 	return 0;
 }
