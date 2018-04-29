@@ -8,11 +8,39 @@
 #include <sys/resource.h>
 #include <sys/stat.h>
 #include <sys/fcntl.h>
+#include <signal.h>
+#include <execinfo.h>
 
 #include <stdexcept>
 using namespace std;
 
+#include "logger.h"
+#include "mainloop.h"
+
 #define SHARED_KEY 65433
+
+struct signal_t
+{
+    int signo;
+    void (*handle)(int sig);
+};
+
+static struct signal_t signalSets[] =
+{
+    {SIGSYS,	SIG_IGN},
+    {SIGPIPE,	SIG_IGN},
+    {SIGHUP,	SIG_IGN},
+    {SIGCHLD,	OS::signal_handle},
+    {SIGSEGV,	OS::signal_handle},
+    {SIGILL,	OS::signal_handle},
+    {SIGBUS,	OS::signal_handle},
+    {SIGFPE,	OS::signal_handle},
+    {SIGINT,	OS::signal_handle},
+    {SIGQUIT,	OS::signal_handle},
+    {SIGKILL,	OS::signal_handle},
+    {SIGTERM,	OS::signal_handle},
+    {SIGSTOP,	OS::signal_handle},
+};
 
 OS::OS(char ** argv)
 {
@@ -138,4 +166,56 @@ void OS::daemon(void)
         exit(-1);
     }
     close(fd);
+}
+
+//绑定信号处理函数
+void OS::SignalBind(void)
+{
+    for(size_t i = 0; i < sizeof(signalSets)/sizeof(signal_t); i++)
+    {
+        struct sigaction act = {};
+        act.sa_handler = signalSets[i].handle;
+        sigemptyset(&act.sa_mask);
+        sigaction(signalSets[i].signo, &act, NULL);
+    }
+}
+
+void OS::signal_handle(int signo)
+{
+    switch(signo)
+    {
+    case SIGSEGV:
+    case SIGILL:
+    case SIGFPE:
+    case SIGBUS:
+    {
+        void * array[30];
+        int size = backtrace(array, 30);
+        char ** str = backtrace_symbols(array, size);
+
+        if(!str)
+        {
+            Debugger::I()->log(Debugger::d_pain, "backtrace_symbols failed.");
+            ::exit(-1);
+        }
+
+        for(int i = 0; i < size; i++)
+        {
+            Debugger::I()->log(Debugger::d_pain, "%s", str[i]);
+        }
+
+        free(str);
+        ::exit(0);
+    }
+    case SIGINT:
+    case SIGQUIT:
+    case SIGKILL:
+    case SIGTERM:
+    case SIGSTOP:
+        Debugger::I()->log(Debugger::d_pain, "Receive STOP SIGNAL...");
+        MainLoop::I().Exit();
+        ::exit(-1);
+    default:
+        Debugger::I()->log(Debugger::d_debug, "Catch Signal:%s", strsignal(signo));
+    }
 }

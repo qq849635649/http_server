@@ -20,6 +20,10 @@ public:
 
     // 设置最大连接数
     int SetMaxConn(int maxconn);
+
+    //绑定信号处理函数
+    void SignalBind(void);
+    static void signal_handle(int signo);
 private:
     char * environ_last;
     char ** os_argv;
