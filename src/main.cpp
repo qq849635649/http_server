@@ -2,6 +2,7 @@
 #include <getopt.h>
 #include "config.h"
 #include "mainloop.h"
+#include "os.h"
 
 int main(int argc, char * argv[])
 {
@@ -28,7 +29,9 @@ int main(int argc, char * argv[])
         }
     }
 
-    if(daemon) {}
+    OS os(argv);
+    if(daemon)
+        os.daemon();
 
     // 解析配置文件
     MConfig::I().loadConfFile(configPath);
