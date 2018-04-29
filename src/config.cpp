@@ -29,6 +29,18 @@ void MConfig::loadConfFile(const char *file)
     if(getSockAddr(&setting, "Base.master", &(base.worker_addr)))
         throw invalid_argument("Find Base.master error.");
 
+    // 获取worker子进程数量
+    if(CONFIG_TRUE != config_lookup_int(&setting, "Base.worker_processes", &(base.workers)))
+        throw invalid_argument("Find Base.worker_processes error.");
+
+    // 获取开辟的共享内存空间大小
+    if(CONFIG_TRUE != config_lookup_int(&setting, "Base.shared_memory", &(base.shared_memory)))
+        throw invalid_argument("Find Base.shared_memory error.");
+
+    // 获取当前最大连接数
+    if(CONFIG_TRUE != config_lookup_int(&setting, "Base.maxconn", &(base.maxconn)))
+        base.maxconn = 65535;
+
     config_destroy(&setting);
 }
 
