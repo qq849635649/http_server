@@ -8,7 +8,8 @@ SOURCES += \
     src/timegeneration.cpp \
     src/slabs.cc \
     src/slabs.cc \
-    src/config.cpp
+    src/config.cpp \
+    src/server.cpp
 
 HEADERS += \
     src/timegeneration.h \
@@ -19,7 +20,8 @@ HEADERS += \
     src/slabs.h \
     src/sharedstack.h \
     src/sharedrwlock.h \
-    src/config.h
+    src/config.h \
+    src/server.h
 
 OTHER_FILES += \
     etc/base.conf
