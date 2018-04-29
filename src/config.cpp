@@ -7,10 +7,6 @@ using namespace std;
 
 #include "config.h"
 
-MConfig::MConfig()
-{
-}
-
 // 加载配置文件
 void MConfig::loadConfFile(const char *file)
 {

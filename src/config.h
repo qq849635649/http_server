@@ -28,8 +28,6 @@ public:
         int32_t level;                  // debug日志级别(pain/debug/info)
     } log;
 
-    MConfig();
-
     void loadConfFile(const char *file);
 
 private:
