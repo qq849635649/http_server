@@ -18,9 +18,9 @@ int main(int argc, char * argv[])
     char ch;
     //配置文件的位置
     bool daemon = false;
-    const char *configPath = "./etc/base.conf";
-    const char *pidPath = "./proc/ucs.pid";
-    while(-1 != (ch = getopt(argc, argv, "f:dp:")))
+    const char *configPath = "./etc/base.conf"; // 默认配置文件
+    const char *pidPath = "./proc/ucs.pid";     // 默认的pid文件
+    while(-1 != (ch = getopt(argc, argv, "f:dp:th")))
     {
         switch(ch)
         {
@@ -32,6 +32,10 @@ int main(int argc, char * argv[])
             break;
         case 'p':   // 指定进程文件
             pidPath = optarg;
+            break;
+        case 't':   // 检测配置文件是否可用
+            return 0;
+        case 'h':   // 打印帮助信息
             break;
         default:
             break;
