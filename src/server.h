@@ -4,6 +4,10 @@
 #include <boost/noncopyable.hpp>
 #include "mainloop.h"
 
+#define MASTER_CONTEXT  0           // master进程的业务
+#define WORKER_CONTEXT  1           // worker进程的业务
+
+// 服务端控制中心
 class Server : boost::noncopyable
 {
     // http句柄信息
@@ -25,7 +29,7 @@ private:
 
     HttpContext master_ctx_;        // Master进程套接字
     HttpContext worker_ctx_;        // Worker进程套接字
-    struct event_base *evbase_;    // 异步事件控制
+    struct event_base *evbase_;     // 异步事件控制
 };
 
 #endif // SERVER_H
