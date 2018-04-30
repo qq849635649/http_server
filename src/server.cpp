@@ -7,8 +7,7 @@ using namespace std;
 
 #define SOCKET_BUF_MAX	(64 * 1024 * 1024)
 
-Server::Server(struct sockaddr_in *master_addr,
-               struct sockaddr_in *worker_addr)
+Server::Server(struct sockaddr_in *master_addr, struct sockaddr_in *worker_addr)
 {
     assert(worker_addr && master_addr);
     AddListeners(master_addr, &master_ctx_);

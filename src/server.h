@@ -18,8 +18,7 @@ class Server : boost::noncopyable
     } HttpContext;
 
 public:
-    Server(struct sockaddr_in *master_addr,
-           struct sockaddr_in *worker_addr);
+    Server(struct sockaddr_in *master_addr, struct sockaddr_in *worker_addr);
 
 private:
     // 创建套接字
