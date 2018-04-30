@@ -9,6 +9,9 @@
 #include "config.h"
 #include "mainloop.h"
 #include "os.h"
+#include "server.h"
+#include "logger.h"
+#include "util/os.h"
 
 int main(int argc, char * argv[])
 {
@@ -38,11 +41,20 @@ int main(int argc, char * argv[])
     OS os(argv);
     if(daemon)
         os.daemon();
+    os.SignalBind();    // 信号绑定
 
     // 解析配置文件
     MConfig::I().loadConfFile(configPath);
 
     // 初始化日志
+    char debug_log_path[256];
+    snprintf(debug_log_path, 255, "%s/debug", MConfig::I().log.path.data());
+    Util::mkdirs(debug_log_path);
+    snprintf(debug_log_path, 255, "%s/debug.master.log", debug_log_path);
+    Debugger::I()->Init(MConfig::I().log.level, debug_log_path);
+
+    // 创建服务端控制器
+    Server server(&(MConfig::I().base.master_addr), &(MConfig::I().base.worker_addr));
 
 	return 0;
 }
