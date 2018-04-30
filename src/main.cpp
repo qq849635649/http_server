@@ -8,10 +8,10 @@
 #include <getopt.h>
 #include "config.h"
 #include "mainloop.h"
-#include "os.h"
+#include "process.h"
 #include "server.h"
 #include "logger.h"
-#include "util/os.h"
+#include "util/os_util.h"
 
 int main(int argc, char * argv[])
 {
@@ -42,10 +42,10 @@ int main(int argc, char * argv[])
         }
     }
 
-    OS os(argv);
+    Process proc(argv);
     if(daemon)
-        os.daemon();
-    os.SignalBind();    // 信号绑定
+        proc.daemon();
+    proc.SignalBind();    // 信号绑定
 
     // 解析配置文件
     MConfig::I().loadConfFile(configPath);

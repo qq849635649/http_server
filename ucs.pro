@@ -10,8 +10,8 @@ SOURCES += \
     src/slabs.cc \
     src/config.cpp \
     src/server.cpp \
-    src/util/os.cpp \
-    src/os.cpp
+    src/process.cpp \
+    src/util/os_util.cpp
 
 HEADERS += \
     src/timegeneration.h \
@@ -25,8 +25,8 @@ HEADERS += \
     src/config.h \
     src/server.h \
     src/mainloop.h \
-    src/util/os.h \
-    src/os.h
+    src/process.h \
+    src/util/os_util.h
 
 OTHER_FILES += \
     etc/base.conf

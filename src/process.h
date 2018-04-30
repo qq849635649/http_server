@@ -1,14 +1,16 @@
-#ifndef OS_H
-#define OS_H
+#ifndef Process_H
+#define Process_H
 
 #include <unistd.h>
 extern char ** environ;
 
-class OS
+#include <boost/noncopyable.hpp>
+
+class Process : boost::noncopyable
 {
 public:
-    OS(char ** argv);
-    ~OS();
+    Process(char ** argv);
+    ~Process();
 
     // 设置进程名称
     void SetProcessTitle(const char * title);
@@ -28,7 +30,5 @@ private:
     char * environ_last;
     char ** os_argv;
     void * shared_mem;
-    OS(const OS & o);
-    OS & operator=(const OS & o);
 };
-#endif // OS_H
+#endif // Process_H

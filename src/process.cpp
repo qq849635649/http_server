@@ -1,4 +1,4 @@
-#include "os.h"
+#include "process.h"
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -30,19 +30,19 @@ static struct signal_t signalSets[] =
     {SIGSYS,	SIG_IGN},
     {SIGPIPE,	SIG_IGN},
     {SIGHUP,	SIG_IGN},
-    {SIGCHLD,	OS::signal_handle},
-    {SIGSEGV,	OS::signal_handle},
-    {SIGILL,	OS::signal_handle},
-    {SIGBUS,	OS::signal_handle},
-    {SIGFPE,	OS::signal_handle},
-    {SIGINT,	OS::signal_handle},
-    {SIGQUIT,	OS::signal_handle},
-    {SIGKILL,	OS::signal_handle},
-    {SIGTERM,	OS::signal_handle},
-    {SIGSTOP,	OS::signal_handle},
+    {SIGCHLD,	Process::signal_handle},
+    {SIGSEGV,	Process::signal_handle},
+    {SIGILL,	Process::signal_handle},
+    {SIGBUS,	Process::signal_handle},
+    {SIGFPE,	Process::signal_handle},
+    {SIGINT,	Process::signal_handle},
+    {SIGQUIT,	Process::signal_handle},
+    {SIGKILL,	Process::signal_handle},
+    {SIGTERM,	Process::signal_handle},
+    {SIGSTOP,	Process::signal_handle},
 };
 
-OS::OS(char ** argv)
+Process::Process(char ** argv)
 {
     int i;
     size_t size = 0;
@@ -85,13 +85,13 @@ OS::OS(char ** argv)
         throw logic_error("shmat error.");
 }
 
-OS::~OS()
+Process::~Process()
 {
     shmdt(shared_mem);
 }
 
 // 设置进程名称
-void OS::SetProcessTitle(const char * title)
+void Process::SetProcessTitle(const char * title)
 {
     char * p;
     const char * TITLE_PREFIX = "advServer: ";
@@ -107,7 +107,7 @@ void OS::SetProcessTitle(const char * title)
 }
 
 // 设置最大连接数
-int OS::SetMaxConn(int maxconn)
+int Process::SetMaxConn(int maxconn)
 {
     struct rlimit  rlmt;
     if(-1 == getrlimit(RLIMIT_NOFILE, &rlmt))
@@ -125,13 +125,13 @@ int OS::SetMaxConn(int maxconn)
     return 0;
 }
 
-void* OS::getSharedMem(void)
+void* Process::getSharedMem(void)
 {
     return shared_mem;
 }
 
 // 设置进程为守护进程模式
-void OS::daemon(void)
+void Process::daemon(void)
 {
     int fd, i;
     for(i = 0; i < 2; i++)
@@ -169,7 +169,7 @@ void OS::daemon(void)
 }
 
 //绑定信号处理函数
-void OS::SignalBind(void)
+void Process::SignalBind(void)
 {
     for(size_t i = 0; i < sizeof(signalSets)/sizeof(signal_t); i++)
     {
@@ -180,7 +180,7 @@ void OS::SignalBind(void)
     }
 }
 
-void OS::signal_handle(int signo)
+void Process::signal_handle(int signo)
 {
     switch(signo)
     {
