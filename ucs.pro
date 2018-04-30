@@ -10,8 +10,6 @@ SOURCES += \
     src/slabs.cc \
     src/config.cpp \
     src/server.cpp \
-    src/util/string_util.cpp \
-    src/util/double_util.cpp \
     src/util/os.cpp \
     src/os.cpp
 
@@ -27,8 +25,6 @@ HEADERS += \
     src/config.h \
     src/server.h \
     src/mainloop.h \
-    src/util/string_util.h \
-    src/util/double_util.h \
     src/util/os.h \
     src/os.h
 
