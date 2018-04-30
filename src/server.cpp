@@ -1,5 +1,88 @@
 #include "server.h"
+#include "logger.h"
+#include <netinet/tcp.h>
+#include <stdexcept>
 
-Server::Server()
+using namespace std;
+
+#define SOCKET_BUF_MAX	(64 * 1024 * 1024)
+
+Server::Server(struct sockaddr_in *master_addr,
+               struct sockaddr_in *worker_addr)
 {
+    assert(worker_addr && master_addr);
+    AddListeners(master_addr, &master_ctx_);
+    AddListeners(worker_addr, &worker_ctx_);
+}
+
+// 创建套接字
+void Server::AddListeners(sockaddr_in *addr, HttpContext *http_ctx)
+{
+    int on = 1;
+    int idle = 480;
+    int intvl = 150;
+    int cnt = 4;
+
+    int handle = socket(AF_INET, SOCK_STREAM, 0);
+    if(handle < 0)
+        throw logic_error("create handle error.");
+
+    if(evutil_make_socket_nonblocking(handle) < 0)
+        throw logic_error("evutil_make_socket_nonblocking error.");
+
+    SetMaxSocketBuf(handle, SOCKET_BUF_MAX, SO_RCVBUF);
+    SetMaxSocketBuf(handle, SOCKET_BUF_MAX, SO_SNDBUF);
+
+    if(setsockopt(handle, SOL_SOCKET, SO_KEEPALIVE, (void *)&on, sizeof(on)) < 0)
+        throw logic_error("set SO_KEEPALIVE error.");
+
+    if(setsockopt(handle, SOL_TCP, TCP_KEEPIDLE, (void *)&idle, sizeof(idle)) < 0)
+        Debugger::I()->log(Debugger::d_debug, "set TCP_KEEPIDLE error:%m");
+
+    if(setsockopt(handle, SOL_TCP, TCP_KEEPINTVL, (void *)&intvl, sizeof(intvl)) < 0)
+        Debugger::I()->log(Debugger::d_debug, "set TCP_KEEPINTVL error:%m");
+
+    if(setsockopt(handle, SOL_TCP, TCP_KEEPCNT, (void *)&cnt, sizeof(cnt)) < 0)
+        Debugger::I()->log(Debugger::d_debug, "set TCP_KEEPCNT error:%m");
+
+    if(evutil_make_listen_socket_reuseable(handle) < 0)
+        throw logic_error("set reuse error.");
+
+    if(bind(handle, (struct sockaddr *)addr, sizeof(*addr)) < 0)
+        throw logic_error("bind error.");
+
+    if(listen(handle, 511) < 0)
+        throw logic_error("listen error.");
+    http_ctx->fd = handle;
+}
+
+//设置tcp参数
+int Server::SetMaxSocketBuf(int fd, int buff_max, int opt)
+{
+    socklen_t intsize = sizeof(int);
+    int min, max, avg;
+    int old_size;
+
+    if(getsockopt(fd, SOL_SOCKET, opt, &old_size, &intsize) != 0)
+    {
+        Debugger::I()->log(Debugger::d_debug, "getsockopt error:%m");
+        return -1;
+    }
+
+    min = old_size;
+    max = buff_max;
+
+    while (min <= max)
+    {
+        avg = ((unsigned int)(min + max)) / 2;
+        if(setsockopt(fd, SOL_SOCKET, opt, (void *)&avg, intsize) == 0)
+        {
+            min = avg + 1;
+        }
+        else
+        {
+            max = avg - 1;
+        }
+    }
+    return 0;
 }
