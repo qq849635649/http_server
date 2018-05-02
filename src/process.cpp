@@ -94,7 +94,7 @@ Process::~Process()
 void Process::SetProcessTitle(const char * title)
 {
     char * p;
-    const char * TITLE_PREFIX = "advServer: ";
+    const char * TITLE_PREFIX = "ucServer: ";
     os_argv[1] = NULL;
 
     p = strncpy(os_argv[0], TITLE_PREFIX, environ_last - os_argv[0]);

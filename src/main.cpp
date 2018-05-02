@@ -13,6 +13,11 @@
 #include "logger.h"
 #include "util/os_util.h"
 
+// app
+#include "app/application.h"
+#include "app/master.h"
+#include "app/worker.h"
+
 int main(int argc, char * argv[])
 {
     char ch;
@@ -63,11 +68,14 @@ int main(int argc, char * argv[])
     {
     case P_MASTER:
         server.PidFile(pidPath);        //将pid存入文件
+        proc.SetProcessTitle("master");
         break;
     case P_SINGLE:
         server.PidFile(pidPath);        //将pid存入文件
+        proc.SetProcessTitle("single");
         break;
     case P_WORKER:
+        proc.SetProcessTitle("worker");
         break;
     }
 
