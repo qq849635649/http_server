@@ -27,19 +27,21 @@ class Server : boost::noncopyable
 public:
     Server(struct sockaddr_in *master_addr, struct sockaddr_in *worker_addr);
 
-    //启动子进程
+    // 启动子进程
     int GenerateWorker(int workers);
+    // 将pid保存到pid文件中
+    void PidFile(const char* pidfile);
 
 private:
     // 创建套接字
     void AddListeners(struct sockaddr_in *addr, HttpContext *http_ctx);
-    //设置tcp参数
+    // 设置tcp参数
     int SetMaxSocketBuf(int fd, int buff_max, int opt);
 
     HttpContext master_ctx_;        // Master进程套接字
     HttpContext worker_ctx_;        // Worker进程套接字
     struct event_base *evbase_;     // 异步事件控制
-    vector<int> pids_;              // 子进程的进程号列表
+    vector<pid_t> pids_;            // 子进程的进程号列表
     vector<int> sub_pipes_;         // master进程持有子进程管道列表
     int controle_;                  // worker进程持有的管道，用于与master通信
     int type_;                      // 进程类型

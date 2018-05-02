@@ -62,8 +62,10 @@ int main(int argc, char * argv[])
     switch(server.GenerateWorker(MConfig::I().base.workers))
     {
     case P_MASTER:
+        server.PidFile(pidPath);        //将pid存入文件
         break;
     case P_SINGLE:
+        server.PidFile(pidPath);        //将pid存入文件
         break;
     case P_WORKER:
         break;

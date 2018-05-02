@@ -1,6 +1,7 @@
 #include "server.h"
 #include "logger.h"
 #include <netinet/tcp.h>
+#include <fcntl.h>
 #include <stdexcept>
 
 using namespace std;
@@ -84,6 +85,7 @@ int Server::SetMaxSocketBuf(int fd, int buff_max, int opt)
     return 0;
 }
 
+// 启动子进程
 int Server::GenerateWorker(int workers)
 {
     for(int i = 0; i < workers; i++)
@@ -110,4 +112,31 @@ int Server::GenerateWorker(int workers)
         }
     }
     return type_;
+}
+
+// 将pid保存到pid文件中
+void Server::PidFile(const char* pidfile)
+{
+    int fd, ret;
+    pid_t pid;
+    char buff[200] = {};
+
+    fd = open(pidfile, O_WRONLY|O_CREAT|O_TRUNC, 0644);
+    if(fd < 0)
+        Debugger::I().log(Debugger::d_debug, "open %s :%m", pidfile);
+
+    pid = getpid();
+    ret = snprintf(buff, 200, "%d\n", pid);
+    ret = write(fd, buff, ret);
+    if(ret < 0)
+        Debugger::I().log(Debugger::d_debug, "write %s err:%m", pidfile);
+
+    for(vector<pid_t>::size_type i = 0; i < pids_.size(); i++)
+    {
+        ret = snprintf(buff, 200, "%d\n", pids_[i]);
+        ret = write(fd, buff, ret);
+        if(ret < 0)
+            Debugger::I().log(Debugger::d_debug, "write %s err:%m", pidfile);
+    }
+    close(fd);
 }
