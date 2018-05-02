@@ -20,15 +20,6 @@ Debugger::~Debugger()
     fclose(handle);
 }
 
-//获取调试日志句柄
-Debugger* Debugger::I()
-{
-    if(_debug == NULL)
-        _debug = new Debugger;
-
-    return _debug;
-}
-
 //初始化日志，也可以用来切换日志文件名称
 void Debugger::Init(int level, const char * path)
 {

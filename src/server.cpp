@@ -38,13 +38,13 @@ void Server::AddListeners(sockaddr_in *addr, HttpContext *http_ctx)
         throw logic_error("set SO_KEEPALIVE error.");
 
     if(setsockopt(handle, SOL_TCP, TCP_KEEPIDLE, (void *)&idle, sizeof(idle)) < 0)
-        Debugger::I()->log(Debugger::d_debug, "set TCP_KEEPIDLE error:%m");
+        Debugger::I().log(Debugger::d_debug, "set TCP_KEEPIDLE error:%m");
 
     if(setsockopt(handle, SOL_TCP, TCP_KEEPINTVL, (void *)&intvl, sizeof(intvl)) < 0)
-        Debugger::I()->log(Debugger::d_debug, "set TCP_KEEPINTVL error:%m");
+        Debugger::I().log(Debugger::d_debug, "set TCP_KEEPINTVL error:%m");
 
     if(setsockopt(handle, SOL_TCP, TCP_KEEPCNT, (void *)&cnt, sizeof(cnt)) < 0)
-        Debugger::I()->log(Debugger::d_debug, "set TCP_KEEPCNT error:%m");
+        Debugger::I().log(Debugger::d_debug, "set TCP_KEEPCNT error:%m");
 
     if(evutil_make_listen_socket_reuseable(handle) < 0)
         throw logic_error("set reuse error.");
@@ -66,7 +66,7 @@ int Server::SetMaxSocketBuf(int fd, int buff_max, int opt)
 
     if(getsockopt(fd, SOL_SOCKET, opt, &old_size, &intsize) != 0)
     {
-        Debugger::I()->log(Debugger::d_debug, "getsockopt error:%m");
+        Debugger::I().log(Debugger::d_debug, "getsockopt error:%m");
         return -1;
     }
 

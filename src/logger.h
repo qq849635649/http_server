@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include "linebuffer.h"
 #include "filehandler.h"
+#include "singleton.h"
 
 #define err(fmt, ...)	fprintf(stderr, "[%s +%d]"fmt"\n", __func__, __LINE__, ##__VA_ARGS__)
 #define debug(level, fmt, ...) _debug(level, __func__, __LINE__, fmt, ##__VA_ARGS__)
@@ -20,8 +21,9 @@
 /// class Debugger
 /// 类说明: 调试日志，采用的模式为单例模式
 
-class Debugger
+class Debugger : public Singleton<Debugger>
 {
+    friend class Singleton<Debugger>;
 public:
     enum
     {
@@ -30,8 +32,6 @@ public:
         d_info,
         D_MAX_LEVEL
     };
-
-    static Debugger* I();
 
     //初始化日志，也可以用来切换日志文件名称
     void Init(int level, const char * path);

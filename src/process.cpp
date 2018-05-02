@@ -195,13 +195,13 @@ void Process::signal_handle(int signo)
 
         if(!str)
         {
-            Debugger::I()->log(Debugger::d_pain, "backtrace_symbols failed.");
+            Debugger::I().log(Debugger::d_pain, "backtrace_symbols failed.");
             ::exit(-1);
         }
 
         for(int i = 0; i < size; i++)
         {
-            Debugger::I()->log(Debugger::d_pain, "%s", str[i]);
+            Debugger::I().log(Debugger::d_pain, "%s", str[i]);
         }
 
         free(str);
@@ -212,10 +212,10 @@ void Process::signal_handle(int signo)
     case SIGKILL:
     case SIGTERM:
     case SIGSTOP:
-        Debugger::I()->log(Debugger::d_pain, "Receive STOP SIGNAL...");
+        Debugger::I().log(Debugger::d_pain, "Receive STOP SIGNAL...");
         MainLoop::I().Exit();
         ::exit(-1);
     default:
-        Debugger::I()->log(Debugger::d_debug, "Catch Signal:%s", strsignal(signo));
+        Debugger::I().log(Debugger::d_debug, "Catch Signal:%s", strsignal(signo));
     }
 }

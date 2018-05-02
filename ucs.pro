@@ -11,7 +11,8 @@ SOURCES += \
     src/config.cpp \
     src/server.cpp \
     src/process.cpp \
-    src/util/os_util.cpp
+    src/util/os_util.cpp \
+    src/logger.cpp
 
 HEADERS += \
     src/timegeneration.h \
@@ -26,7 +27,10 @@ HEADERS += \
     src/server.h \
     src/mainloop.h \
     src/process.h \
-    src/util/os_util.h
+    src/util/os_util.h \
+    src/logger.h \
+    src/linebuffer.h \
+    src/filehandler.h
 
 OTHER_FILES += \
     etc/base.conf
