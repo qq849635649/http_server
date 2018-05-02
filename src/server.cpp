@@ -7,6 +7,8 @@ using namespace std;
 
 #define SOCKET_BUF_MAX	(64 * 1024 * 1024)
 
+int Server::sequence_ = 0;
+
 Server::Server(struct sockaddr_in *master_addr, struct sockaddr_in *worker_addr)
 {
     assert(worker_addr && master_addr);
@@ -75,13 +77,37 @@ int Server::SetMaxSocketBuf(int fd, int buff_max, int opt)
     {
         avg = ((unsigned int)(min + max)) / 2;
         if(setsockopt(fd, SOL_SOCKET, opt, (void *)&avg, intsize) == 0)
-        {
             min = avg + 1;
-        }
         else
-        {
             max = avg - 1;
-        }
     }
     return 0;
+}
+
+int Server::GenerateWorker(int workers)
+{
+    for(int i = 0; i < workers; i++)
+    {
+        int pipe[2] = {};
+        socketpair(AF_UNIX, SOCK_STREAM, 0, pipe);
+        pid_t pid = fork();
+        switch(pid)
+        {
+        case -1:
+            throw logic_error("Generate Worker error");
+            break;
+        case 0:
+            type_ = P_WORKER;
+            sequence_ = i;
+            close(pipe[0]);
+            controle_ = pipe[1];
+            return type_;
+        default:
+            pids_.push_back(pid);
+            type_ = P_MASTER;
+            close(pipe[1]);
+            sub_pipes_.push_back(pipe[0]);
+        }
+    }
+    return type_;
 }
