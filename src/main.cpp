@@ -67,14 +67,17 @@ int main(int argc, char * argv[])
     switch(server.GenerateWorker(MConfig::I().base.workers))
     {
     case P_MASTER:
+        MainLoop::I().Init();
         server.PidFile(pidPath);        //将pid存入文件
         proc.SetProcessTitle("master");
         break;
     case P_SINGLE:
+        MainLoop::I().Init();
         server.PidFile(pidPath);        //将pid存入文件
         proc.SetProcessTitle("single");
         break;
     case P_WORKER:
+        MainLoop::I().Init();
         proc.SetProcessTitle("worker");
         break;
     }
