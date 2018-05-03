@@ -3,6 +3,7 @@
 
 #include <boost/noncopyable.hpp>
 #include "mainloop.h"
+#include "app/application.h"
 
 #include <vector>
 using namespace std;
@@ -31,6 +32,10 @@ public:
     int GenerateWorker(int workers);
     // 将pid保存到pid文件中
     void PidFile(const char* pidfile);
+    // CPU负载均衡
+    void SetAffinity(void);
+    // 新建http服务控制
+    void AddApplication(BaseApp *app, struct event_base *base, int type);
 
 private:
     // 创建套接字

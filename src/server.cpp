@@ -4,6 +4,8 @@
 #include <fcntl.h>
 #include <stdexcept>
 
+#include <event2/http.h>
+
 using namespace std;
 
 #define SOCKET_BUF_MAX	(64 * 1024 * 1024)
@@ -11,6 +13,7 @@ using namespace std;
 int Server::sequence_ = 0;
 
 Server::Server(struct sockaddr_in *master_addr, struct sockaddr_in *worker_addr)
+    : type_(P_SINGLE)
 {
     assert(worker_addr && master_addr);
     AddListeners(master_addr, &master_ctx_);
@@ -139,4 +142,64 @@ void Server::PidFile(const char* pidfile)
             Debugger::I().log(Debugger::d_debug, "write %s err:%m", pidfile);
     }
     close(fd);
+}
+
+// CPU负载均衡
+void Server::SetAffinity(void)
+{
+    cpu_set_t mask;
+    int cpu_core = sysconf(_SC_NPROCESSORS_ONLN);
+
+    CPU_ZERO(&mask);
+    CPU_SET(sequence_ % cpu_core, &mask);
+    if(sched_setaffinity(0, sizeof(cpu_set_t), &mask) < 0)
+        Debugger::I().log(Debugger::d_debug, "sched_setaffinity err:%m\n");
+}
+
+// 新建http服务控制
+void Server::AddApplication(BaseApp *app, struct event_base *base, int type)
+{
+    evbase_ = base;
+
+    // single = master + worker
+    switch(type)
+    {
+    case P_MASTER:
+    {
+        struct evhttp * http = evhttp_new(evbase_);
+        if(!http)
+            throw logic_error("evhttp_new failed.");
+
+        evhttp_set_allowed_methods(http, EVHTTP_REQ_POST|EVHTTP_REQ_GET);
+        const map<string, BaseApp::ReqHandler>& item = app->GetHandlers();
+        for(BaseApp::const_HandlerIter iter = item.begin(); iter != item.end(); ++iter)
+        {
+            // 添加master的http处理方法
+            evhttp_set_cb(http, iter->first.c_str(), iter->second, app);
+        }
+        evhttp_accept_socket(http, master_ctx_.fd);
+        master_ctx_.ctx = http;
+        break;
+    }
+
+    case P_WORKER:
+    {
+        struct evhttp * http = evhttp_new(evbase_);
+        if(!http)
+            throw logic_error("evhttp_new failed.");
+
+        evhttp_set_allowed_methods(http, EVHTTP_REQ_POST|EVHTTP_REQ_GET);
+        const map<string, BaseApp::ReqHandler> & item = app->GetHandlers();
+        for(BaseApp::const_HandlerIter iter = item.begin(); iter != item.end(); ++iter)
+        {
+            // 添加worker的http处理方法
+            evhttp_set_cb(http, iter->first.c_str(), iter->second, app);
+        }
+        evhttp_accept_socket(http, worker_ctx_.fd);
+        worker_ctx_.ctx = http;
+        break;
+    }
+    default:
+        break;
+    };
 }
