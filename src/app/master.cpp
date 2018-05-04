@@ -11,7 +11,9 @@ MasterApp::~MasterApp()
 {}
 
 void MasterApp::Init()
-{}
+{
+    handlers_.insert(std::make_pair(string("/health"), &HealthCheckCallback));
+}
 
 // 函数功能: 健康检查窗口
 void MasterApp::HealthCheckCallback(struct evhttp_request * req, void * arg)
