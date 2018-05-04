@@ -1,6 +1,8 @@
 #ifndef SHAREDALLOCATOR_H
 #define SHAREDALLOCATOR_H
 
+#include "slabs.h"
+
 template<typename _Tp>
 class SharedAllocator
 {
