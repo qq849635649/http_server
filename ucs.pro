@@ -23,7 +23,8 @@ HEADERS += \
     src/shm/sharedstack.h \
     src/shm/sharedrwlock.h \
     src/shm/sharedallocator.h \
-    src/datamanager.h
+    src/datamanager.h \
+    src/shm/hashtable.h
 
 SOURCES += \
     src/main.cpp \
@@ -36,7 +37,8 @@ SOURCES += \
     src/app/master.cpp \
     src/app/worker.cpp \
     src/shm/slabs.cc \
-    src/datamanager.cpp
+    src/datamanager.cpp \
+    src/shm/hashtable.cpp
 
 OTHER_FILES += \
     etc/base.conf
