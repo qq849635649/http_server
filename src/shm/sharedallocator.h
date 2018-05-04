@@ -51,5 +51,13 @@ public:
     { return size_t(-1) / sizeof(_Tp); }
 };
 
+template<typename _T1, typename _T2>
+inline bool operator==(const SharedAllocator<_T1>&, const SharedAllocator<_T2>&) { return true; }
+template<typename _Tp>
+inline bool operator==(const SharedAllocator<_Tp>&, const SharedAllocator<_Tp>&) { return true; }
+template<typename _T1, typename _T2>
+inline bool operator!=(const SharedAllocator<_T1>&, const SharedAllocator<_T2>&) { return false; }
+template<typename _Tp>
+inline bool operator!=(const SharedAllocator<_Tp>&, const SharedAllocator<_Tp>&) { return false; }
 
 #endif // SHAREDALLOCATOR_H
