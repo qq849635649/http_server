@@ -13,7 +13,7 @@ void MConfig::loadConfFile(const char *file)
     config_t setting = {};
     config_init(&setting);
 
-    //const char* tmp = NULL;
+    const char* tmp = NULL;
 
     if(CONFIG_TRUE != config_read_file(&setting, file))
         throw invalid_argument("Read configure error.");
@@ -37,6 +37,14 @@ void MConfig::loadConfFile(const char *file)
     // 获取当前最大连接数
     if(CONFIG_TRUE != config_lookup_int(&setting, "Base.maxconn", &(base.maxconn)))
         base.maxconn = 65535;
+
+    // 加载debug日志级别
+    if(CONFIG_TRUE != config_lookup_int(&setting, "Log.debug_level", &(log.level)))
+        throw invalid_argument("Find Log.debug_level error.");
+
+    if(CONFIG_TRUE != config_lookup_string(&setting, "Log.log_path", &tmp))
+        throw invalid_argument("Find Log.log_path error.");
+    log.path = tmp;
 
     config_destroy(&setting);
 }
