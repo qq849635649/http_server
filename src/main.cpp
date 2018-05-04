@@ -52,11 +52,11 @@ int main(int argc, char * argv[])
     MConfig::I().loadConfFile(configPath);
 
     // 初始化日志
-    char debug_log_path[256];
-    snprintf(debug_log_path, 255, "%s/debug", MConfig::I().log.path.data());
-    Util::mkdirs(debug_log_path);
-    snprintf(debug_log_path, 255, "%s/debug.master.log", debug_log_path);
-    Debugger::I().Init(MConfig::I().log.level, debug_log_path);
+    char debug_dir_path[256], debug_file_path[256];
+    snprintf(debug_dir_path, 255, "%s/debug", MConfig::I().log.path.data());
+    Util::mkdirs(debug_dir_path);
+    snprintf(debug_file_path, 255, "%s/debug.master.log", debug_dir_path);
+    Debugger::I().Init(MConfig::I().log.level, debug_file_path);
 
     Process proc(argv);
     if(daemon)
@@ -91,6 +91,9 @@ int main(int argc, char * argv[])
         TG::I().Start(MainLoop::I().GetBase()); // 时间管理
         break;
     case P_WORKER:
+        snprintf(debug_file_path, 255, "%s/debug.%d.log", debug_dir_path, Server::sequence_);
+        cout << debug_file_path << endl;
+        Debugger::I().Init(MConfig::I().log.level, debug_file_path);
         MainLoop::I().Init();
         proc.SetProcessTitle("worker");
         server.AddApplication(worker, MainLoop::I().GetBase(), P_WORKER);

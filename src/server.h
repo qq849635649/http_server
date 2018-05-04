@@ -37,6 +37,8 @@ public:
     // 新建http服务控制
     void AddApplication(BaseApp *app, struct event_base *base, int type);
 
+    static int sequence_;           // worker进程序号
+
 private:
     // 创建套接字
     void AddListeners(struct sockaddr_in *addr, HttpContext *http_ctx);
@@ -50,7 +52,6 @@ private:
     vector<int> sub_pipes_;         // master进程持有子进程管道列表
     int controle_;                  // worker进程持有的管道，用于与master通信
     int type_;                      // 进程类型
-    static int sequence_;           // worker进程序号
 };
 
 #endif // SERVER_H
