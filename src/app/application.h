@@ -1,7 +1,8 @@
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
 
-#include "../logger.h"
+#include "../log/logger.h"
+#include "../log/timegeneration.h"
 #include "../mainloop.h"
 
 #include <map>

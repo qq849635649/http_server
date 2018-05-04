@@ -14,7 +14,7 @@
 #include <stdexcept>
 using namespace std;
 
-#include "logger.h"
+#include "log/logger.h"
 #include "mainloop.h"
 
 #define SHARED_KEY 65433

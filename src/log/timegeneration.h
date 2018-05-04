@@ -3,7 +3,7 @@
 
 #include <event.h>
 #include "singleton.h"
-#include "sharedstack.h"
+#include "./shm/sharedstack.h"
 
 #define SLOT_MAX	32
 #define STR_MAX		50

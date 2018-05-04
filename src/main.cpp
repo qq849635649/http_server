@@ -10,7 +10,8 @@
 #include "mainloop.h"
 #include "process.h"
 #include "server.h"
-#include "logger.h"
+#include "log/logger.h"
+#include "log/timegeneration.h"
 #include "util/os_util.h"
 
 // app
@@ -78,6 +79,7 @@ int main(int argc, char * argv[])
         MainLoop::I().Init();
         server.PidFile(pidPath);        //将pid存入文件
         proc.SetProcessTitle("master");
+        TG::I().Start(MainLoop::I().GetBase()); // 时间管理
         server.AddApplication(master, MainLoop::I().GetBase(), P_MASTER);
         break;
     case P_SINGLE:
@@ -86,6 +88,7 @@ int main(int argc, char * argv[])
         proc.SetProcessTitle("single");
         server.AddApplication(master, MainLoop::I().GetBase(), P_MASTER);
         server.AddApplication(worker, MainLoop::I().GetBase(), P_WORKER);
+        TG::I().Start(MainLoop::I().GetBase()); // 时间管理
         break;
     case P_WORKER:
         MainLoop::I().Init();

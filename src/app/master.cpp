@@ -19,7 +19,8 @@ void MasterApp::Init()
 void MasterApp::HealthCheckCallback(struct evhttp_request * req, void * arg)
 {
     pid_t pid =  getpid();
-    cout << "worker pid = " << pid << endl;
-    evbuffer_add(req->output_buffer, "alive", 5);
+    char buf[100] = { 0 };
+    int ret = snprintf(buf, 100, "%s-master-%d", TG::I().GetTime(), pid);
+    evbuffer_add(req->output_buffer, buf, ret);
     evhttp_send_reply(req, 200, "OK", NULL);
 }

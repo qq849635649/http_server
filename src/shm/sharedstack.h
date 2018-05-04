@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <boost/noncopyable.hpp>
-#include "logger.h"
+#include "log/logger.h"
 
 class SharedStackAllocator : boost::noncopyable
 {
