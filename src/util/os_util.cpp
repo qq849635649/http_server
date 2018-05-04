@@ -9,7 +9,7 @@ int mkdirs(const char* path)
 {
     char cmd[1024] = { 0 };
     snprintf(cmd, 1023, "mkdir -p %s", path);
-    system(path);
+    system(cmd);
     return 0;
 }
 
