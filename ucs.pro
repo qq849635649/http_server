@@ -22,7 +22,8 @@ HEADERS += \
     src/shm/slabs.h \
     src/shm/sharedstack.h \
     src/shm/sharedrwlock.h \
-    src/shm/sharedallocator.h
+    src/shm/sharedallocator.h \
+    src/datamanager.h
 
 SOURCES += \
     src/main.cpp \
@@ -34,7 +35,8 @@ SOURCES += \
     src/logger.cpp \
     src/app/master.cpp \
     src/app/worker.cpp \
-    src/shm/slabs.cc
+    src/shm/slabs.cc \
+    src/datamanager.cpp
 
 OTHER_FILES += \
     etc/base.conf
