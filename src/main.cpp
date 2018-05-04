@@ -64,21 +64,33 @@ int main(int argc, char * argv[])
 
     // 创建服务端控制器
     Server server(&(MConfig::I().base.master_addr), &(MConfig::I().base.worker_addr));
+
+    //创建服务路由
+    BaseApp *worker = new WorkerApp;
+    worker->Init();
+    BaseApp *master = new MasterApp;
+    master->Init();
+
+    // 创建工作线程
     switch(server.GenerateWorker(MConfig::I().base.workers))
     {
     case P_MASTER:
         MainLoop::I().Init();
         server.PidFile(pidPath);        //将pid存入文件
         proc.SetProcessTitle("master");
+        server.AddApplication(master, MainLoop::I().GetBase(), P_MASTER);
         break;
     case P_SINGLE:
         MainLoop::I().Init();
         server.PidFile(pidPath);        //将pid存入文件
         proc.SetProcessTitle("single");
+        server.AddApplication(master, MainLoop::I().GetBase(), P_MASTER);
+        server.AddApplication(worker, MainLoop::I().GetBase(), P_WORKER);
         break;
     case P_WORKER:
         MainLoop::I().Init();
         proc.SetProcessTitle("worker");
+        server.AddApplication(worker, MainLoop::I().GetBase(), P_WORKER);
         break;
     }
 
