@@ -18,13 +18,13 @@ void MConfig::loadConfFile(const char *file)
     if(CONFIG_TRUE != config_read_file(&setting, file))
         throw invalid_argument("Read configure error.");
 
+    // 获取master监听端口
+    if(getSockAddr(&setting, "Base.master", &(base.master_addr)))
+        throw invalid_argument("Find Base.master error.");
+
     // 获取worker监听端口
     if(getSockAddr(&setting, "Base.worker", &(base.worker_addr)))
         throw invalid_argument("Find Base.worker error.");
-
-    // 获取master监听端口
-    if(getSockAddr(&setting, "Base.master", &(base.worker_addr)))
-        throw invalid_argument("Find Base.master error.");
 
     // 获取worker子进程数量
     if(CONFIG_TRUE != config_lookup_int(&setting, "Base.worker_processes", &(base.workers)))
