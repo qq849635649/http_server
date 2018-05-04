@@ -94,7 +94,7 @@ Process::~Process()
 void Process::SetProcessTitle(const char * title)
 {
     char * p;
-    const char * TITLE_PREFIX = "ucServer: ";
+    const char * TITLE_PREFIX = "UcServer: ";
     os_argv[1] = NULL;
 
     p = strncpy(os_argv[0], TITLE_PREFIX, environ_last - os_argv[0]);
@@ -180,6 +180,7 @@ void Process::SignalBind(void)
     }
 }
 
+using namespace std;
 void Process::signal_handle(int signo)
 {
     switch(signo)
