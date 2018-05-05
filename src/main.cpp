@@ -80,15 +80,20 @@ int main(int argc, char * argv[])
         server.PidFile(pidPath);        //将pid存入文件
         proc.SetProcessTitle("master");
         TG::I().Start(MainLoop::I().GetBase()); // 时间管理
+        // 添加路由
         server.AddApplication(master, MainLoop::I().GetBase(), P_MASTER);
+
         break;
     case P_SINGLE:
         MainLoop::I().Init();
         server.PidFile(pidPath);        //将pid存入文件
         proc.SetProcessTitle("single");
+        TG::I().Start(MainLoop::I().GetBase()); // 时间管理
+        // 添加路由
         server.AddApplication(master, MainLoop::I().GetBase(), P_MASTER);
         server.AddApplication(worker, MainLoop::I().GetBase(), P_WORKER);
-        TG::I().Start(MainLoop::I().GetBase()); // 时间管理
+        //初始化dns客户端，用来解析ip地址
+        DNSClient::I().Init(MainLoop::I().GetBase());
         break;
     case P_WORKER:
         snprintf(debug_file_path, 255, "%s/debug.%d.log", debug_dir_path, Server::sequence_);
@@ -96,7 +101,10 @@ int main(int argc, char * argv[])
         Debugger::I().Init(MConfig::I().log.level, debug_file_path);
         MainLoop::I().Init();
         proc.SetProcessTitle("worker");
+        // 添加路由
         server.AddApplication(worker, MainLoop::I().GetBase(), P_WORKER);
+        //初始化dns客户端，用来解析ip地址
+        DNSClient::I().Init(MainLoop::I().GetBase());
         break;
     }
 

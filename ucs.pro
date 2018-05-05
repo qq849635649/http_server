@@ -25,7 +25,8 @@ HEADERS += \
     src/shm/sharedallocator.h \
     src/datamanager.h \
     src/shm/hashtable.h \
-    modules/md5/md5.h
+    modules/md5/md5.h \
+    src/dns.h
 
 SOURCES += \
     src/main.cpp \
