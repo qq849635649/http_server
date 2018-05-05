@@ -49,8 +49,10 @@ public:
     ~Connection();
 
     void release(void);
-    bool start(void (*cb)(struct evhttp_request *, void *), void * args,
-               const char *data, size_t len, const char* pid);
+    bool get(void (*cb)(struct evhttp_request *, void *),
+             void *args, const char* params, const map<string, string> &headers);
+    bool post(void (*cb)(struct evhttp_request *, void *),
+              void* args, const char *data, size_t len, const map<string, string> &headers);
     bool isConnected(void)
     {
         switch (cn->state)

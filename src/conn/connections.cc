@@ -23,8 +23,35 @@ void Connection::release(void)
     pool->release(this);
 }
 
-bool Connection::start(void (*cb)(struct evhttp_request *, void *), void * args,
-                       const char * data, size_t len, const char* pid)
+bool Connection::get(void (*cb)(struct evhttp_request *, void *),
+                     void *args, const char* params,
+                     const map<string, string>& headers)
+{
+    struct evhttp_uri * uri = pool->getURI();
+    string realPath = path;
+    req = evhttp_request_new(cb, args);
+    if(!req)
+        return false;
+
+    if(realPath.find('?') != realPath.npos)
+        realPath.append("?");
+    realPath.append(params);
+
+    evhttp_add_header(req->output_headers, "Connection", "keep-alive");
+    evhttp_add_header(req->output_headers, "Host", evhttp_uri_get_host(uri));
+    for(map<string, string>::const_iterator iter = headers.begin();
+        iter != headers.end(); ++iter)
+    {
+        evhttp_add_header(req->output_headers, iter->first.data(), iter->second.data());
+    }
+    if(evhttp_make_request(cn, req, EVHTTP_REQ_GET, realPath.c_str()) != 0)
+        return false;
+    return true;
+}
+
+bool Connection::post(void (*cb)(struct evhttp_request *, void *),
+                      void* args, const char *data, size_t len,
+                      const map<string, string>& headers)
 {
     struct evhttp_uri * uri = pool->getURI();
     const char* path = evhttp_uri_get_path(uri);
@@ -38,11 +65,11 @@ bool Connection::start(void (*cb)(struct evhttp_request *, void *), void * args,
 
     evbuffer_add(req->output_buffer, data, len);
     evhttp_add_header(req->output_headers, "Connection", "keep-alive");
-    evhttp_add_header(req->output_headers, "Content-Type", "application/x-protobuf");
     evhttp_add_header(req->output_headers, "Host", evhttp_uri_get_host(uri));
-    if(NULL != pid)
+    for(map<string, string>::const_iterator iter = headers.begin();
+        iter != headers.end(); ++iter)
     {
-        evhttp_add_header(req->output_headers, "Pid", pid);
+        evhttp_add_header(req->output_headers, iter->first.data(), iter->second.data());
     }
     if(evhttp_make_request(cn, req, EVHTTP_REQ_POST, path) != 0)
         return false;
