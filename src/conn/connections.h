@@ -49,10 +49,28 @@ public:
     ~Connection();
 
     void release(void);
+    /**
+     * @brief get get方式发出请求
+     * @param args 回调函数时携带的参数
+     * @param params get参数，直接以字符串形式追加到uri中
+     * @param headers http头信息，map<string, string>类型
+     * @return 成功返回true，失败返回false
+     */
     bool get(void (*cb)(struct evhttp_request *, void *),
              void *args, const char* params, const map<string, string> &headers);
+
+    /**
+     * @brief post post方式发出请求
+     * @param args 回调函数时携带的参数
+     * @param data 请求时携带的post数据
+     * @param len 数据的长度
+     * @param headers http头信息，map<string, string>类型
+     * @return 成功返回true，失败返回false
+     */
     bool post(void (*cb)(struct evhttp_request *, void *),
               void* args, const char *data, size_t len, const map<string, string> &headers);
+
+    // 连接是否正常
     bool isConnected(void)
     {
         switch (cn->state)
