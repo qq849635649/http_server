@@ -24,7 +24,8 @@ HEADERS += \
     src/shm/sharedrwlock.h \
     src/shm/sharedallocator.h \
     src/datamanager.h \
-    src/shm/hashtable.h
+    src/shm/hashtable.h \
+    modules/md5/md5.h
 
 SOURCES += \
     src/main.cpp \
@@ -38,7 +39,9 @@ SOURCES += \
     src/app/worker.cpp \
     src/shm/slabs.cc \
     src/datamanager.cpp \
-    src/shm/hashtable.cpp
+    src/shm/hashtable.cpp \
+    modules/md5/cxx_md5.cc \
+    modules/md5/c_md5.c
 
 OTHER_FILES += \
     etc/base.conf
