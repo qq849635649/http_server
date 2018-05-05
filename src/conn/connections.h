@@ -48,6 +48,7 @@ public:
     Connection(ConnectionPool * p);
     ~Connection();
 
+    // 本次使用结束，释放该链接
     void release(void);
     /**
      * @brief get get方式发出请求
