@@ -26,7 +26,9 @@ HEADERS += \
     src/datamanager.h \
     src/shm/hashtable.h \
     modules/md5/md5.h \
-    src/dns.h
+    src/dns.h \
+    src/conn/subrequest.h \
+    src/conn/connections.h
 
 SOURCES += \
     src/main.cpp \
@@ -42,7 +44,9 @@ SOURCES += \
     src/datamanager.cpp \
     src/shm/hashtable.cpp \
     modules/md5/cxx_md5.cc \
-    modules/md5/c_md5.c
+    modules/md5/c_md5.c \
+    src/conn/subrequest.cc \
+    src/conn/connections.cc
 
 OTHER_FILES += \
     etc/base.conf
