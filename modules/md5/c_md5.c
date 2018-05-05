@@ -32,19 +32,19 @@
           a += b; \
           }
 
-static void MD5Init(MD5_CTX *context);
-static void MD5Update(MD5_CTX *context,unsigned char *input,unsigned int inputlen);
-static void MD5Final(MD5_CTX *context,unsigned char digest[16]);
-static void MD5Transform(unsigned int state[4],unsigned char block[64]);
-static void MD5Encode(unsigned char *output,unsigned int *input,unsigned int len);
-static void MD5Decode(unsigned int *output,unsigned char *input,unsigned int len);
+//static void MD5Init(MD5_CTX *context);
+//static void MD5Update(MD5_CTX *context,unsigned char *input,unsigned int inputlen);
+//static void MD5Final(MD5_CTX *context,unsigned char digest[16]);
+//static void MD5Transform(unsigned int state[4],unsigned char block[64]);
+//static void MD5Encode(unsigned char *output,unsigned int *input,unsigned int len);
+//static void MD5Decode(unsigned int *output,unsigned char *input,unsigned int len);
  
 unsigned char PADDING[]={0x80,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
                          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
                          
-static void MD5Init(MD5_CTX *context)
+void MD5Init(MD5_CTX *context)
 {
      context->count[0] = 0;
      context->count[1] = 0;
@@ -53,7 +53,7 @@ static void MD5Init(MD5_CTX *context)
      context->state[2] = 0x98BADCFE;
      context->state[3] = 0x10325476;
 }
-static void MD5Update(MD5_CTX *context,unsigned char *input,unsigned int inputlen)
+void MD5Update(MD5_CTX *context,unsigned char *input,unsigned int inputlen)
 {
     unsigned int i = 0,index = 0,partlen = 0;
     index = (context->count[0] >> 3) & 0x3F;
@@ -77,7 +77,7 @@ static void MD5Update(MD5_CTX *context,unsigned char *input,unsigned int inputle
     }
     memcpy(&context->buffer[index],&input[i],inputlen-i);
 }
-static void MD5Final(MD5_CTX *context,unsigned char digest[16])
+void MD5Final(MD5_CTX *context,unsigned char digest[16])
 {
     unsigned int index = 0,padlen = 0;
     unsigned char bits[8];
@@ -88,7 +88,7 @@ static void MD5Final(MD5_CTX *context,unsigned char digest[16])
     MD5Update(context,bits,8);
     MD5Encode(digest,context->state,16);
 }
-static void MD5Encode(unsigned char *output,unsigned int *input,unsigned int len)
+void MD5Encode(unsigned char *output,unsigned int *input,unsigned int len)
 {
     unsigned int i = 0,j = 0;
     while(j < len)
@@ -101,7 +101,7 @@ static void MD5Encode(unsigned char *output,unsigned int *input,unsigned int len
          j+=4;
     }
 }
-static void MD5Decode(unsigned int *output,unsigned char *input,unsigned int len)
+void MD5Decode(unsigned int *output,unsigned char *input,unsigned int len)
 {
      unsigned int i = 0,j = 0;
      while(j < len)
@@ -114,7 +114,7 @@ static void MD5Decode(unsigned int *output,unsigned char *input,unsigned int len
            j+=4; 
      }
 }
-static void MD5Transform(unsigned int state[4],unsigned char block[64])
+void MD5Transform(unsigned int state[4],unsigned char block[64])
 {
      unsigned int a = state[0];
      unsigned int b = state[1];
