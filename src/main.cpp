@@ -10,7 +10,7 @@
 #include "mainloop.h"
 #include "process.h"
 #include "server.h"
-#include "dns.h"
+#include "conn/dns.h"
 #include "log/logger.h"
 #include "log/timegeneration.h"
 #include "util/os_util.h"
