@@ -57,17 +57,17 @@ public:
     {
         switch (cn->state)
         {
-            case EVCON_DISCONNECTED:
-            case EVCON_CONNECTING:
-                return false;
-            case EVCON_IDLE:
-            case EVCON_READING_FIRSTLINE:
-            case EVCON_READING_HEADERS:
-            case EVCON_READING_BODY:
-            case EVCON_READING_TRAILER:
-            case EVCON_WRITING:
-            default:
-                return true;
+        case EVCON_DISCONNECTED:
+        case EVCON_CONNECTING:
+            return false;
+        case EVCON_IDLE:
+        case EVCON_READING_FIRSTLINE:
+        case EVCON_READING_HEADERS:
+        case EVCON_READING_BODY:
+        case EVCON_READING_TRAILER:
+        case EVCON_WRITING:
+        default:
+            return true;
         }
     }
 private:
